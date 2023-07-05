@@ -31,6 +31,13 @@ class Collection {
     delete(id) {
         return this.model.destroy({ where: { id } });
     }
+    async readAll(id, model) {
+        const records = await this.model.findOne({
+          where: { id },
+          include: model
+        });
+        return records;
+      }
 
 }
 

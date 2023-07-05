@@ -2,9 +2,9 @@
 
 const express = require('express');
 
-
+const student =require('../models/index')
 const router = express.Router();
-const middleware = require('../auth/model/middleware/modelMiddleware.mode')
+const middleware = require('../auth/model/middleware/modelMiddleware.model')
 
 router.param('model', middleware);
 router.get('/:model', handleGetAll);
@@ -12,6 +12,9 @@ router.get('/:model/:id', handleGetOne);
 router.post('/:model', handleCreate);
 router.put('/:model/:id', handleUpdate);
 router.delete('/:model/:id', handleDelete);
+router.get('/teacher/:id', allStudent);
+
+
 
 async function handleGetAll(req, res) {
     let allRecords = await req.model.get();
@@ -20,6 +23,7 @@ async function handleGetAll(req, res) {
 
 async function handleGetOne(req, res) {
     const id = req.params.id;
+
     let theRecord = await req.model.get(id)
     res.status(200).json(theRecord);
 }
@@ -42,6 +46,11 @@ async function handleDelete(req, res) {
     let deletedRecord = await req.model.delete(id);
     res.status(200).json(deletedRecord);
 }
+async function allStudent(req, res) {
+    const id = req.params.id;
+    const theRecord = await req.model.readAll(id, student.model);
+    res.status(200).json(theRecord)
+  }
 
 
 module.exports = router;

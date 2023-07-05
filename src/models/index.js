@@ -31,5 +31,6 @@ module.exports = {
     db: sequelize,
     student: new Collection (studentModel),
     teacher:new Collection(teacherModel),
-    manager: new Collection (managerModel)
+    manager: new Collection (managerModel),
+    studentModel
 }

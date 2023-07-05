@@ -2,18 +2,19 @@
 
 const express = require('express');
 
-const student =require('../models/index')
+const model = require('../models/index')
 const router = express.Router();
 const middleware = require('../auth/model/middleware/modelMiddleware.model')
+const isAuth = require('../auth/model/middleware/bearer')
+const acl = require('../auth/model/middleware/acl')
 
 router.param('model', middleware);
-router.get('/:model', handleGetAll);
-router.get('/:model/:id', handleGetOne);
-router.post('/:model', handleCreate);
-router.put('/:model/:id', handleUpdate);
-router.delete('/:model/:id', handleDelete);
-router.get('/teacher/:id', allStudent);
-
+router.get('/:model', isAuth, acl('post'), handleGetAll);
+router.get('/:model/:id', isAuth, acl('read'), handleGetOne);
+router.post('/:model', isAuth, this.model === 'teacher' ? acl('post') : acl('delete'), handleCreate);
+router.put('/:model/:id', isAuth, this.model === 'teacher' ? acl('post') : acl('delete'), handleUpdate);
+router.delete('/:model/:id', isAuth, acl('delete'), handleDelete);
+router.get('/:model/grades/:id', isAuth, acl('post'), allStudent);
 
 
 async function handleGetAll(req, res) {
@@ -22,7 +23,7 @@ async function handleGetAll(req, res) {
 }
 
 async function handleGetOne(req, res) {
-    const id = req.params.id;
+    const id = req.params.id; s
 
     let theRecord = await req.model.get(id)
     res.status(200).json(theRecord);
@@ -48,9 +49,8 @@ async function handleDelete(req, res) {
 }
 async function allStudent(req, res) {
     const id = req.params.id;
-    const theRecord = await req.model.readAll(id, student.model);
+    const theRecord = await req.model.readAll(id, model.studentModel);
     res.status(200).json(theRecord)
-  }
-
+}
 
 module.exports = router;

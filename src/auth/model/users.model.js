@@ -3,7 +3,7 @@
 require('dotenv').config()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const SECRET = process.env.SECRET
+const SECRET = process.env.SECRET || 'hamza'
 // calling the database
 const { db } = require('../../models/index')
 console.log(db)
